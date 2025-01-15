@@ -21,5 +21,9 @@ Route::middleware('auth')->group(function () {
 
 require __DIR__.'/auth.php';
 
-route::get('admin/dashboard',[HomeController::class,'index'])->
-    middleware(['auth','admin'])->name('admin.dashboard');
+Route::middleware(['auth','admin'])->group(function(){
+    Route::get('admin/dashboard',[HomeController::class,'index'])->name('admin.dashboard');
+    Route::get('admin/election',[HomeController::class,'addelection'])->name('admin.election');
+});
+// route::get('admin/dashboard',[HomeController::class,'index'])->
+//     middleware(['auth','admin'])->name('admin.dashboard');
