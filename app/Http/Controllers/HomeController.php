@@ -14,4 +14,20 @@ class HomeController extends Controller
     {
         return view('admin.addelection');
     }
+    public function addcandidate()
+    {
+        return view('admin.addcandidate');
+    }
+    public function voterslist()
+    {
+        return view('admin.voters');
+    }
+    public function result()
+    {
+        return view('admin.result');
+    }
+    public function showresult()
+    {
+        return view('admin.showresult');
+    }
 }

@@ -24,6 +24,11 @@ require __DIR__.'/auth.php';
 Route::middleware(['auth','admin'])->group(function(){
     Route::get('admin/dashboard',[HomeController::class,'index'])->name('admin.dashboard');
     Route::get('admin/election',[HomeController::class,'addelection'])->name('admin.election');
+    Route::get('admin/candidate',[HomeController::class,'addcandidate'])->name('admin.candidate');
+    Route::get('admin/voters',[HomeController::class,'voterslist'])->name('admin.voters');
+    Route::get('admin/result',[HomeController::class,'result'])->name('admin.result');
+    Route::get('admin/showresult',[HomeController::class,'showresult'])->name('admin.showresult');
+
 });
 // route::get('admin/dashboard',[HomeController::class,'index'])->
 //     middleware(['auth','admin'])->name('admin.dashboard');

@@ -32,6 +32,7 @@
     background: white;
     border-radius: 4px;
     box-shadow: rgba(60, 66, 87, 0.12) 0px 7px 14px 0px, rgba(0, 0, 0, 0.12) 0px 3px 6px 0px;
+    margin-top:50px;
 }
 span {
     display: block;
@@ -91,25 +92,16 @@ input[type="submit"] {
 
   </style>
     <body>
-<!-- <div class="box-root padding-top--48 padding-bottom--24 flex-flex flex-justifyContent--center">
-          <h1><a href="#" rel="dofollow" style="text-align:center">Add Election</a></h1>
-        </div> -->
+
         <div class="container">
         <div class="formbg-outer">
           <div class="formbg">
             <div class="formbg-inner padding-horizontal--48">
-              <span class="padding-bottom--15">Add Election</span>
+              <span class="padding-bottom--15">Election</span>
               <form id="stripe-login">
                 <div class="field padding-bottom--24">
                   <label for="electionname">Election Name</label>
                   <input type="text" name="electionname">
-                </div>
-                <div class="field padding-bottom--24">
-                  <div class="grid--50-50">
-                    <label for="enddate">End Date</label>
-                
-                  </div>
-                  <input type="date" name="date">
                 </div>
               
                 <div class="field padding-top--24">
@@ -120,7 +112,7 @@ input[type="submit"] {
           </div>
 </div>
 </body>
-</x-slot>
-</x-app-layout>
 </html>
 
+</x-slot>
+</x-app-layout>

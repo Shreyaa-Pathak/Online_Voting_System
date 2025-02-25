@@ -5,9 +5,10 @@
             <!-- <div class="flex">
                 <!-- Logo -->
                 <div class="shrink-0 flex items-center">
-                    <a href="{{ route('dashboard') }}">
+                    <!-- <a href="{{ route('dashboard') }}">
                         <x-application-logo class="block h-9 w-auto fill-current text-gray-800" />
-                    </a>
+                    </a> -->
+                    <a class="navbar-brand" style="color: black; font-size: 30px;font-weight: 1000; margin-top: 10px;">VOTIFY</a>
                     
                 </div>
 
@@ -22,13 +23,13 @@
                         <x-nav-link :href="route('admin.election')" :active="request()->routeIs('admin.election')">
                         {{ __('Election') }}
                         </x-nav-link>
-                        <x-nav-link :href="route('dashboard')" :active="request()->routeIs('dashboard')">
+                        <x-nav-link :href="route('admin.candidate')" :active="request()->routeIs('admin.candidate')">
                         {{ __('Candidate') }}
                         </x-nav-link>
-                        <x-nav-link :href="route('dashboard')" :active="request()->routeIs('dashboard')">
+                        <x-nav-link :href="route('admin.voters')" :active="request()->routeIs('admin.voters')">
                         {{ __('Voters') }}
                         </x-nav-link>
-                        <x-nav-link :href="route('dashboard')" :active="request()->routeIs('dashboard')">
+                        <x-nav-link :href="route('admin.result')" :active="request()->routeIs('admin.result')">
                         {{ __('Result') }}
                         </x-nav-link>
                     @else
