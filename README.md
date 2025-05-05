@@ -68,3 +68,4 @@ The Laravel framework is open-sourced software licensed under the [MIT license](
 =======
 # Online_Voting_System
 >>>>>>> 7dd5ff5a9f5d83a7e9127ea3ea25f2ddfdb8e086
+>>>>>>> To access admin : admin@gmail.com & password: admin
