@@ -55,7 +55,7 @@ label {
     align-items: center;
 }
 
-.field input {
+.name {
     font-size: 16px;
     line-height: 28px;
     padding: 8px 16px;
@@ -86,6 +86,14 @@ input[type="submit"] {
     color: #fff;
     font-weight: 600;
     cursor: pointer;
+    font-size: 16px;
+    line-height: 28px;
+    padding: 8px 16px;
+    width: 100%;
+    min-height: 44px;
+    border: unset;
+    border-radius: 4px;
+    outline-color: rgb(84 105 212 / 0.5);
 }
 
 
@@ -98,12 +106,18 @@ input[type="submit"] {
           <div class="formbg">
             <div class="formbg-inner padding-horizontal--48">
               <span class="padding-bottom--15">Election</span>
-              <form id="stripe-login">
+              <form id="stripe-login" method="POST" action="{{ route('admin.result.show') }}">
+              @csrf
                 <div class="field padding-bottom--24">
                   <label for="electionname">Election Name</label>
-                  <input type="text" name="electionname">
+                  <select name="election_id" class="name" required>
+                      <option value="">-- Select Election --</option>
+                      @foreach($elections as $election)
+                        <option value="{{ $election->id }}">{{ $election->name }}</option>
+                      @endforeach
+                      </select>
                 </div>
-              
+                
                 <div class="field padding-top--24">
                   <input type="submit" name="submit" value="Submit">
               </div>

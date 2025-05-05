@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use App\Models\Vote;
 // use Illuminate\Contracts\Auth\MustVerifyEmail;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Foundation\Auth\User as Authenticatable;
@@ -21,6 +22,13 @@ class User extends Authenticatable
         'name',
         'email',
         'password',
+        'voterid',
+        'role',
+        'dob',
+        'address',
+        'phonenumber',
+        'status',
+        'voteridnumber',
     ];
 
     /**
@@ -44,5 +52,9 @@ class User extends Authenticatable
             'email_verified_at' => 'datetime',
             'password' => 'hashed',
         ];
+    }
+    public function votes()
+    {
+        return $this->hasMany(Vote::class);
     }
 }

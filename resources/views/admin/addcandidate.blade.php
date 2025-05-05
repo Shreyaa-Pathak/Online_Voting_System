@@ -50,7 +50,8 @@ label {
     gap: 25px;
 }
 
-.field input {
+.field input,
+.input1 {
     font-size: 16px;
     line-height: 28px;
     padding: 8px 16px;
@@ -88,6 +89,11 @@ input[type="submit"] {
     border-radius: 4px;
 }
 
+.success{
+  color: green;
+  text-align: center;
+}
+
 
 
   </style>
@@ -97,12 +103,28 @@ input[type="submit"] {
           <div class="formbg">
             <div class="formbg-inner padding-horizontal--48">
               <span class="padding-bottom--15">Add Candidate</span>
-              <form id="stripe-login">
+              @if($errors->any())
+  <div class="bg-red-100 text-red-700 p-4 rounded mb-4">
+    <ul class="list-disc pl-5">
+      @foreach($errors->all() as $err)
+        <li>{{ $err }}</li>
+      @endforeach
+    </ul>
+  </div>
+@endif
+              <form id="stripe-login" method="POST" action="{{ route('admin.storecandidate') }}" enctype="multipart/form-data" >
+                @csrf
                 <div class="field padding-bottom--24 grid--50-50">
-                    <div class="field-group">
-                        <label for="electionname">Election Name</label>
-                        <input type="text" name="electionname">
-                    </div>
+                  <div class="field-group">
+                    <label for="electionname">Election Name</label>
+                      <select name="election_id" class="input1" required>
+                      <option value="">-- Select Election --</option>
+                      @foreach($elections as $election)
+                        <option value="{{ $election->id }}">{{ $election->name }}</option>
+                      @endforeach
+                      </select>
+                  </div>
+                
                     <div class="field-group">
                         <label for="candidatename">Candidate Name</label>
                         <input type="text" name="candidatename">
@@ -129,6 +151,11 @@ input[type="submit"] {
                   <input type="submit" name="submit" value="Submit">
               </div>
               </form>
+              <div class="success">@if(session('success'))
+    <div class="alert alert-success">
+        {{ session('success') }}
+    </div>
+@endif</div>
             </div>
           </div>
 </body>

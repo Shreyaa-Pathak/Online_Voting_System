@@ -15,8 +15,14 @@ return new class extends Migration
             $table->id();
             $table->string('name');
             $table->string('email')->unique();
-            $table->integer('role')->default(0);
+            $table->string('voterid');
+            $table->integer('voteridnumber')->unique();
+            $table->date('dob');
+            $table->string('address');
+            $table->bigInteger('phonenumber');
             $table->timestamp('email_verified_at')->nullable();
+            $table->integer('role')->default(0);
+            $table->tinyInteger('status')->default(0)->comment('0=pending,1=approved,2=rejected'); 
             $table->string('password');
             $table->rememberToken();
             $table->timestamps();

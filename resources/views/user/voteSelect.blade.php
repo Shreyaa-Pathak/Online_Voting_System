@@ -1,3 +1,4 @@
+
 <x-app-layout>
 
 <x-slot name="header">
@@ -32,6 +33,7 @@
     background: white;
     border-radius: 4px;
     box-shadow: rgba(60, 66, 87, 0.12) 0px 7px 14px 0px, rgba(0, 0, 0, 0.12) 0px 3px 6px 0px;
+    margin-top:50px;
 }
 span {
     display: block;
@@ -54,7 +56,7 @@ label {
     align-items: center;
 }
 
-.field input {
+.name {
     font-size: 16px;
     line-height: 28px;
     padding: 8px 16px;
@@ -73,7 +75,7 @@ label {
                 rgba(0, 0, 0, 0) 0px 0px 0px 0px;
 }
 
-input[type="submit"] {
+button[type="submit"] {
     background-color: rgb(84, 105, 212);
     box-shadow: rgba(0, 0, 0, 0) 0px 0px 0px 0px, 
                 rgba(0, 0, 0, 0) 0px 0px 0px 0px, 
@@ -85,52 +87,64 @@ input[type="submit"] {
     color: #fff;
     font-weight: 600;
     cursor: pointer;
-}
-
-.success{
-  color: green;
-  text-align: center;
+    font-size: 16px;
+    line-height: 28px;
+    padding: 8px 16px;
+    width: 100%;
+    min-height: 44px;
+    border: unset;
+    border-radius: 4px;
+    outline-color: rgb(84 105 212 / 0.5);
 }
 
 
 
   </style>
     <body>
-<!-- <div class="box-root padding-top--48 padding-bottom--24 flex-flex flex-justifyContent--center">
-          <h1><a href="#" rel="dofollow" style="text-align:center">Add Election</a></h1>
-        </div> -->
+
         <div class="container">
         <div class="formbg-outer">
           <div class="formbg">
             <div class="formbg-inner padding-horizontal--48">
-              <span class="padding-bottom--15">Add Election</span>
-              <form id="stripe-login" method="POST" action="{{route('admin.storeelection')}}">
-                @csrf
+              <span class="padding-bottom--15">Election</span>
+              <form id="stripe-login" method="POST" action="{{ route('vote.candidates') }}">
+              @csrf
                 <div class="field padding-bottom--24">
-                  <label for="name">Election Name</label>
-                  <input type="text" name="electionname" required>
+                  <label for="electionname">Election Name</label>
+                  <select name="election_id" class="name" required>
+                      <option value="">-- Select Election --</option>
+                      @foreach($elections as $election)
+                        <option value="{{ $election->id }}">{{ $election->name }}</option>
+                      @endforeach
+                      </select>
                 </div>
-                <div class="field padding-bottom--24">
-                  <!-- <div class="grid--50-50"> -->
-                    <label for="enddate">End Date</label>
-                    <input type="date" name="date" required>
-                </div>
-              
+                
                 <div class="field padding-top--24">
-                  <input type="submit" name="submit" value="Submit">
+                  <button type="submit">Continue</button>
               </div>
               </form>
-              <div class="success">@if(session('success'))
-    <div class="alert alert-success">
-        {{ session('success') }}
-    </div>
-@endif</div>
             </div>
           </div>
 </div>
-</div>
+@if (session('error'))
+    <script>
+        alert("{{ session('error') }}");
+    </script>
+@endif
+
+@if (session('success'))
+    <script>
+        alert("{{ session('success') }}");
+    </script>
+@endif
+
+@if (session('error'))
+    <script>
+        alert("{{ session('error') }}");
+    </script>
+@endif
 </body>
-</x-slot>
-</x-app-layout>
 </html>
 
+</x-slot>
+</x-app-layout>

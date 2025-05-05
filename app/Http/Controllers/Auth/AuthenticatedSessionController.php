@@ -31,6 +31,13 @@ class AuthenticatedSessionController extends Controller
         {
             return redirect('admin/dashboard');
         }
+        if (auth()->user()->status !== 1) {
+            auth()->logout();
+            return back()->withErrors([
+                'email' => 'Your account is not approved yet.',
+            ])->withInput();
+        }
+        
 
         return redirect()->intended(route('dashboard'));
     }

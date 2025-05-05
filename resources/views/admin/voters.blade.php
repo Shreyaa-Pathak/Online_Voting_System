@@ -21,7 +21,7 @@
   font-weight: bold;
 }
 .table-container {
-  width: 90%;
+  width: 100%;
   margin: auto;
   overflow-x: auto;
   box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
@@ -100,86 +100,78 @@ button:hover {
 <body>
 <x-app-layout>
 
+
 <x-slot name="header">
-   
+    <h2 class="font-semibold text-xl text-gray-800 leading-tight">Voters List</h2>
+  </x-slot>
 
-    <!--**********************************
-        Main wrapper start
-    ***********************************-->
-    <div id="main-wrapper">
+  <div class="container mx-auto p-6">
+    @if(session('success'))
+      <div class="bg-green-500 text-white p-4 rounded mb-4">
+        {{ session('success') }}
+      </div>
+    @endif
 
-       
-     
-		
-        <!--**********************************
-            Content body start
-        ***********************************-->
-        <div class="content-body">
-            <!-- row -->
+    <div class="table-container">
+      <table id="voters-table">
+        <thead>
+          <tr>
+            <th>S.N.</th>
+            <th>User ID</th>
+            <th>Voter ID</th>
+            <th>Name</th>
+            <th>Email</th>
+            <th>DOB</th>
+            <th>Address</th>
+            <th>Phone No</th>
+            <th>Status</th>
+            <th>Action</th>
+          </tr>
+        </thead>
+        <tbody>
+          @foreach($voters as $v)
+            <tr>
+              <td>{{ $loop->iteration }}</td>
+              <td>{{ $v->id }}</td>
+              <td>
+                @if($v->voterid)
+                  <img src="{{ asset('storage/'.$v->voterid) }}" class="voter-img">
+                @endif
+              </td>
+              <td>{{ $v->name }}</td>
+              <td>{{ $v->email }}</td>
+              <td>{{ $v->dob }}</td>
+              <td>{{ $v->address }}</td>
+              <td>{{ $v->phonenumber }}</td>
+              <td>@if($v->status == 0)<p>Pending</p>
+                  @elseif ($v->status == 1) <p>Approved</p>
+                  @else <p>Rejected</p>
+                @endif
+              </td>
+              <td>
+              @if($v->status === 0)
+              <div style="display: flex; gap: 5px;">
+                  <form action="{{ route('admin.voters.approve', $v) }}" method="POST">
+                  @csrf
+                    <button class="approve-btn">Approve</button>
+                </form>
+
+                <form action="{{ route('admin.voters.reject', $v) }}" method="POST">
+                @csrf
+                  <button class="reject-btn">Reject</button>
+                </form>
+                </div>
             
-				
-				<div class="row">
-					
-					<div class="col-lg-12">
-						<div class="row tab-content">
-							<div id="list-view" class="tab-pane fade active show col-lg-12">
-								<!-- <div class="card"> -->
-									<!-- <div class="card-header"> -->
-										<h1 class="title">Voters list</h1>
-										
-									<!-- </div> -->
-									<div class="card-body">
-										<div class="table-responsive">
-											<table id="example3" class="display" style="min-width: 845px">
-												<thead>
-													<tr>
-														
-                                                        <th>User ID</th>
-                                                        <th>Voter ID</th>
-                                                        <th>Voter ID No</th>
-                                                        <th>Name</th>
-                                                        <th>Email</th>
-                                                        <th>DOB</th>
-                                                        <th>Address</th>
-                                                        <th>Phone No</th>
-                                                        <th>Status</th>
-                                                        <th>Action</th>
-                                                    </tr>
-                                                </thead>
-											
-												<tbody>
-													<tr>
-                                                    <td>1</td>
-                                                    <td><img src="voter3.png" alt="Voter ID" class="voter-img"></td>
-                                                   
-                                                    <td>98974564</td>
-                                                    <td>zz</td>
-                                                    <td>zz@gmail.com</td>
-                                                    <td>2000-04-04</td>
-                                                    <td>Hyderabad</td>
-                                                    <td>33333333</td>
-                                                    <td>No</td>
-                                                    <td>
-                                                        <a href="javascript:void(0);" class="btn btn-sm btn-primary">Approve</a>
-                                                        <a href="javascript:void(0);" class="btn btn-sm btn-danger">Reject</a>
-                                                    </td>													
-													</tr>
-													
-												</tbody>
-											</table>
-										</div>
-									<!-- </div> -->
-                                </div>
-                            </div>
-						</div>
-					</div>
-				</div>
-			   
-            </div>
-        </div>
-</body>
-</html>
+              @else
+              <span class="text-gray-700">Done</span>
+              @endif
+              </td>
+            </tr>
+          @endforeach
+        </tbody>
+      </table>
+    </div>
+  </div>
  
 
-</x-slot>
 </x-app-layout> 
