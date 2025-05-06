@@ -139,8 +139,8 @@ input[type="submit"] {
                   <input type="text" name="address">
                 </div>
                 <div class="field-group">
-                  <label for="phonenumber">Phone number</label>
-                  <input type="number" name="phonenumber">
+                  <label for="candidatenumber">Candidate Number</label>
+                  <input type="number" name="candidatenumber">
                 </div>
                 <div class="field-group">
                     <label for="photo">Photo</label>

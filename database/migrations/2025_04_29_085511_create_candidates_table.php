@@ -17,7 +17,7 @@ return new class extends Migration
             $table->string('candidatename');
             $table->string('partyname');
             $table->string('address');
-            $table->string('phonenumber');
+            $table->string('candidatenumber');
             $table->string('photo');
 
             $table->foreign('election_id')->references('id')->on('elections')->onDelete('cascade');

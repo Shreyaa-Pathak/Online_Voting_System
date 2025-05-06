@@ -50,7 +50,7 @@ class HomeController extends Controller
         'candidatename' => 'required|string|max:255',
         'partyname'     => 'required|string|max:255',
         'address'       => 'required|string',
-        'phonenumber'   => 'required|numeric',
+        'candidatenumber'   => 'required|numeric',
         'photo'         => 'required|image|mimes:jpeg,png,jpg|max:2048',
     ]);
 

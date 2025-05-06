@@ -8,7 +8,7 @@ use App\Models\Vote;
 
 class Candidate extends Model
 {
-    protected $fillable = ['election_id','candidatename', 'partyname', 'address', 'phonenumber','photo'];
+    protected $fillable = ['election_id','candidatename', 'partyname', 'address', 'candidatenumber','photo'];
 
     public function election()
 {
