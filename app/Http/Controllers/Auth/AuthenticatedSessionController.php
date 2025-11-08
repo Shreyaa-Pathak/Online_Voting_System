@@ -27,17 +27,24 @@ class AuthenticatedSessionController extends Controller
         $request->authenticate();
 
         $request->session()->regenerate();
-        if($request->user()->role == 1)
-        {
+        if ($request->user()->role == 1) {
             return redirect('admin/dashboard');
         }
         if (auth()->user()->status !== 1) {
+            if (auth()->user()->status == 2) {
+                auth()->logout();
+                return back()->withErrors([
+                    'email' => 'Your account has been rejected.',
+                ])->withInput();
+            }
+
             auth()->logout();
             return back()->withErrors([
                 'email' => 'Your account is not approved yet.',
             ])->withInput();
         }
-        
+
+
 
         return redirect()->intended(route('dashboard'));
     }

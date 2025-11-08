@@ -1,150 +1,52 @@
-
 <x-app-layout>
+    <div class="mt-12 py-10 px-4 sm:px-6 lg:px-8 flex justify-center">
+        <div class="w-full max-w-md bg-white rounded-lg shadow-lg p-8">
+            <h2 class="text-2xl font-semibold text-gray-800 mb-6 text-center">Select Election</h2>
 
-<x-slot name="header">
-<html>
-  <style>
-    .container {
-    min-height: 80vh; /* Ensures the container takes at least the full height of the viewport */
-    display: flex;
-    flex-direction: column;
-  
-}
-    .box-root {
-    box-sizing: border-box;
-}
-
-.padding-bottom--24 {
-  padding-bottom: 24px;
-}
-.padding-top--24 {
-  padding-top: 22px;
-}
-.padding-horizontal--48 {
-  padding: 48px;
-}
-.padding-bottom--15 {
-  padding-bottom: 15px;
-}
-.formbg {
-    margin: 0px auto;
-    width: 100%;
-    max-width: 448px;
-    background: white;
-    border-radius: 4px;
-    box-shadow: rgba(60, 66, 87, 0.12) 0px 7px 14px 0px, rgba(0, 0, 0, 0.12) 0px 3px 6px 0px;
-    margin-top:50px;
-}
-span {
-    display: block;
-    font-size: 20px;
-    line-height: 28px;
-    color: #1a1f36;
-}
-label {
-    margin-bottom: 10px;
-}
-.reset-pass a,label {
-    font-size: 14px;
-    font-weight: 600;
-    display: block;
-}
-
-.grid--50-50 {
-    display: grid;
-    grid-template-columns: 50% 50%;
-    align-items: center;
-}
-
-.name {
-    font-size: 16px;
-    line-height: 28px;
-    padding: 8px 16px;
-    width: 100%;
-    min-height: 44px;
-    border: unset;
-    border-radius: 4px;
-    outline-color: rgb(84 105 212 / 0.5);
-    background-color: rgb(255, 255, 255);
-    box-shadow: rgba(0, 0, 0, 0) 0px 0px 0px 0px, 
-                rgba(0, 0, 0, 0) 0px 0px 0px 0px, 
-                rgba(0, 0, 0, 0) 0px 0px 0px 0px, 
-                rgba(60, 66, 87, 0.16) 0px 0px 0px 1px, 
-                rgba(0, 0, 0, 0) 0px 0px 0px 0px, 
-                rgba(0, 0, 0, 0) 0px 0px 0px 0px, 
-                rgba(0, 0, 0, 0) 0px 0px 0px 0px;
-}
-
-button[type="submit"] {
-    background-color: rgb(84, 105, 212);
-    box-shadow: rgba(0, 0, 0, 0) 0px 0px 0px 0px, 
-                rgba(0, 0, 0, 0) 0px 0px 0px 0px, 
-                rgba(0, 0, 0, 0.12) 0px 1px 1px 0px, 
-                rgb(84, 105, 212) 0px 0px 0px 1px, 
-                rgba(0, 0, 0, 0) 0px 0px 0px 0px, 
-                rgba(0, 0, 0, 0) 0px 0px 0px 0px, 
-                rgba(60, 66, 87, 0.08) 0px 2px 5px 0px;
-    color: #fff;
-    font-weight: 600;
-    cursor: pointer;
-    font-size: 16px;
-    line-height: 28px;
-    padding: 8px 16px;
-    width: 100%;
-    min-height: 44px;
-    border: unset;
-    border-radius: 4px;
-    outline-color: rgb(84 105 212 / 0.5);
-}
-
-
-
-  </style>
-    <body>
-
-        <div class="container">
-        <div class="formbg-outer">
-          <div class="formbg">
-            <div class="formbg-inner padding-horizontal--48">
-              <span class="padding-bottom--15">Election</span>
-              <form id="stripe-login" method="POST" action="{{ route('vote.candidates') }}">
-              @csrf
-                <div class="field padding-bottom--24">
-                  <label for="electionname">Election Name</label>
-                  <select name="election_id" class="name" required>
-                      <option value="">-- Select Election --</option>
-                      @foreach($elections as $election)
-                        <option value="{{ $election->id }}">{{ $election->name }}</option>
-                      @endforeach
-                      </select>
+            @if(session('success'))
+                <div class="mb-4 p-3 text-sm text-green-700 bg-green-100 border border-green-300 rounded">
+                    {{ session('success') }}
                 </div>
-                
-                <div class="field padding-top--24">
-                  <button type="submit">Continue</button>
-              </div>
-              </form>
-            </div>
-          </div>
-</div>
-@if (session('error'))
-    <script>
-        alert("{{ session('error') }}");
-    </script>
-@endif
+            @endif
 
-@if (session('success'))
-    <script>
-        alert("{{ session('success') }}");
-    </script>
-@endif
+            @if(session('error'))
+                <div class="mb-4 p-3 text-sm text-red-700 bg-red-100 border border-red-300 rounded">
+                    {{ session('error') }}
+                </div>
+            @endif
 
-@if (session('error'))
-    <script>
-        alert("{{ session('error') }}");
-    </script>
-@endif
-</body>
-</html>
+            @if ($errors->any())
+                <div class="mb-4 p-3 text-sm text-red-700 bg-red-100 border border-red-300 rounded">
+                    <ul class="list-disc pl-5 space-y-1">
+                        @foreach ($errors->all() as $error)
+                            <li>{{ $error }}</li>
+                        @endforeach
+                    </ul>
+                </div>
+            @endif
 
-</x-slot>
+            <form method="POST" action="{{ route('vote.candidates') }}" class="space-y-5">
+                @csrf
+                <div>
+                    <label for="election_id" class="block text-sm font-medium text-gray-700 mb-2">
+                        Election Name
+                    </label>
+                    <select name="election_id" id="election_id" required
+                        class="w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring focus:ring-indigo-200 focus:ring-opacity-50 text-sm">
+                        <option value="">-- Select Election --</option>
+                        @foreach($elections as $election)
+                            <option value="{{ $election->id }}">{{ $election->name }}</option>
+                        @endforeach
+                    </select>
+                </div>
+
+                <div>
+                    <button type="submit"
+                        class="w-full py-2.5 px-4 bg-indigo-600 text-white font-semibold text-sm rounded-md hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2 transition">
+                        Continue
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
 </x-app-layout>

@@ -38,11 +38,14 @@ require __DIR__.'/auth.php';
 Route::middleware(['auth','admin'])->group(function(){
     Route::get('admin/dashboard',[HomeController::class,'index'])->name('admin.dashboard');
 
-    Route::get('/admin/election', [HomeController::class, 'addelection'])->name('admin.election');
-    Route::post('/admin/election', [HomeController::class, 'storeelection'])->name('admin.storeelection');
+    Route::get('/admin/election',[HomeController::class, 'allelection'])->name('admin.election');
+    Route::post('/admin/election/store', [HomeController::class, 'storeelection'])->name('admin.storeelection');
+    Route::delete('/admin/election/{id}', [HomeController::class, 'deleteelection'])->name('admin.deleteElection');
 
-    Route::get('/admin/candidate',[HomeController::class,'addcandidate'])->name('admin.candidate');
-    Route::post('/admin/candidate',[HomeController::class,'storecandidate'])->name('admin.storecandidate');
+    Route::get('/admin/candidate',[HomeController::class,'allcandidate'])->name('admin.candidate');
+    Route::post('/admin/candidate/store',[HomeController::class,'storecandidate'])->name('admin.storecandidate');
+    Route::delete('/admin/candidate/{id}', [HomeController::class, 'deletecandidate'])->name('admin.deleteCandidate');
+
     
     Route::get('/admin/voters', [VoterController::class, 'index'])->name('admin.voters');
      Route::post('/admin/voters/{user}/approve', [VoterController::class, 'approve'])->name('admin.voters.approve');

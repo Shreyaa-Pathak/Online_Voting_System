@@ -13,7 +13,7 @@ class UserController extends Controller
 {
     public function showElectionForm()
     {
-        $elections = Election::all();
+        $elections = Election::where('end_date', '>=', now())->get();
         return view('user.voteSelect', compact('elections'));
     }
     

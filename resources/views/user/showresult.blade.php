@@ -1,149 +1,76 @@
-
-
-<!DOCTYPE html>
-<html lang="en">
-
-<head>
-    <link rel="stylesheet" href="http://localhost/online_voting_system/resources/css/bootstrap.min.css">
-	<!-- Datatable -->
-    <link href="vendor/datatables/css/jquery.dataTables.min.css" rel="stylesheet">
-    <link rel="stylesheet" href="css/style.css">
-    <style>
-        body {
-  font-family: Arial, sans-serif;
-  margin: 20px;
-  background-color: #f4f4f4;
-}
-
-.title{
-  font-size :25px;
-  text-align:center;
-  font-weight: bold;
-}
-.table-container {
-  width: 50%;
-  margin: auto;
-  overflow-x: auto;
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
-  border-radius: 8px;
-  background-color: #fff;
-}
-
-table {
-    margin-left:300px;
-  width: 50%;
-  border-collapse: collapse;
-  text-align: center;
-}
-
-thead {
-  background-color: rgb(84, 105, 212) ; 
-  color: #fff;
-}
-
-th, td {
-  padding: 10px;
-  border: 1px solid #ddd;
-}
-
-th {
-  font-weight: bold;
-  text-align: center;
-}
-
-tbody tr:nth-child(even) {
-  background-color: #f9f9f9;
-}
-
-/* tbody tr:hover {
-  background-color: #f1f1f1;
-} */
-
-.voter-img {
-  width: 50px;
-  height: 50px;
-  border-radius: 4px;
-  object-fit: cover;
-}
-
-#main-wrapper {
-    min-height: 80vh; /* Ensures the container takes at least the full height of the viewport */
-    display: flex;
-    flex-direction: column;
-  
-}
-
-  </style>
-
-</head>
-
-<body>
 <x-app-layout>
+    <div class="py-10 px-4 sm:px-6 lg:px-8">
+        <div class="max-w-5xl mx-auto">
 
-<x-slot name="header">
-
-    <div id="main-wrapper">
-
-        <div class="content-body">
-            <!-- row -->
-            
-				
-				<div class="row">
-					
-					<div class="col-lg-12">
-						<div class="row tab-content">
-							<div id="list-view" class="tab-pane fade active show col-lg-12">
-								
-										<h1 class="title">Result for {{ $election->name}}</h1>
-								
-									<div class="card-body">
-										<div class="table-responsive">
-											<table id="example3" class="display" style="min-width: 200px">
-												<thead>
-													<tr>
-                            <th>Candidate Profile</th>
-                            <th>Candidate Name</th>
-                             <th>Party Name</th>
-                            <th>Total Votes</th>                          
-                          </tr>
-                      </thead>
-											
-											<tbody>
-                        @foreach ($candidates as $candidate)
-												<tr>
-                        <td><img src="{{ asset('storage/' . $candidate->photo) }}" alt="Photo" width="100"></td>
-                       <td>{{ $candidate->candidatename }}</td>
-                        <td>{{ $candidate->partyname }}</td>
-                         <td>{{ $candidate->votes_count }}</td>													
-													</tr>
-                          @endforeach
-												</tbody>
-											</table>
-										</div>
-
-                                </div>
-                            </div>
-						</div>
-					</div>
-				</div>
-			   
-                
-          <div>
-            @if($winner-> votes_count == 0)
-            <h1 style="font-size:20px; font-weight:bold; text-align:center">
-              No votes have been cast yet.
+            <!-- Title -->
+            <h1 class="text-2xl font-bold text-center text-gray-800 mb-8">
+                Election Results: <span class="text-indigo-600">{{ $election->name }}</span>
             </h1>
-            @else
-            <h1 style="font-size:20px; font-weight:bold; text-align:center">
-                Election is won by {{ $winner->candidatename }} with {{ $winner->votes_count }} votes
-            </h1>
-            @endif</h1>
-          </div>
+
+            <!-- Result Summary -->
+            <div class="mt-10 text-center">
+                @if($winner->votes_count == 0)
+                    <div class="bg-yellow-50 border border-yellow-200 text-yellow-800 rounded-lg py-4 px-6 inline-block">
+                        <p class="text-lg font-medium">No votes have been cast yet.</p>
+                    </div>
+                @else
+                    <div class="bg-green-50 border border-green-200 rounded-lg py-6 px-8 shadow">
+                        <h2 class="text-xl font-semibold text-green-800">
+                            Winner: <span class="text-indigo-700">{{ $winner->candidatename }}</span>
+                        </h2>
+                        <p class="text-gray-700 mt-2">
+                            of <span class="font-medium">{{ $winner->partyname }}</span> Party<br>
+                            with <span class="font-semibold text-indigo-700">{{ $winner->votes_count }}</span> votes
+                        </p>
+                        <div class="flex justify-center mt-4">
+                            <img src="{{ asset('storage/' . $winner->photo) }}" alt="Winner Photo"
+                                 class="h-24 w-24 rounded-full object-cover border-4 border-indigo-500 shadow-lg">
+                        </div>
+                    </div>
+                @endif
             </div>
-        </div>
-</body>
-</html>
- 
 
-</x-slot>
-</x-app-layout> 
+            <!-- Table -->
+            <div class="mt-12 bg-white rounded-lg shadow-[0_7px_14px_0_rgba(60,66,87,0.12),0_3px_6px_0_rgba(0,0,0,0.12)] overflow-hidden">
+                <table class="min-w-full divide-y divide-gray-200">
+                    <thead class="bg-gray-50">
+                        <tr>
+                            <th scope="col" class="px-6 py-3 text-left text-sm font-semibold uppercase tracking-wider">
+                                Candidate
+                            </th>
+                            <th scope="col" class="px-6 py-3 text-left text-sm font-semibold uppercase tracking-wider">
+                                Party
+                            </th>
+                            <th scope="col" class="px-6 py-3 text-left text-sm font-semibold uppercase tracking-wider">
+                                Total Votes
+                            </th>
+                        </tr>
+                    </thead>
+                    <tbody class="bg-white divide-y divide-gray-100">
+                        @foreach ($candidates as $candidate)
+                            <tr class="hover:bg-gray-50 transition">
+                                <td class="px-6 py-4 whitespace-nowrap flex items-center space-x-4">
+                                    <img src="{{ asset('storage/' . $candidate->photo) }}" alt="Photo"
+                                         class="h-12 w-12 rounded-full object-cover border border-gray-200 shadow-sm">
+                                    <div>
+                                        <p class="text-sm font-semibold text-gray-900">{{ $candidate->candidatename }}</p>
+                                        <p class="text-xs text-gray-500">#{{ $candidate->candidatenumber ?? 'N/A' }}</p>
+                                    </div>
+                                </td>
+                                <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-700">
+                                    {{ $candidate->partyname }}
+                                </td>
+                                <td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-800">
+                                    {{ $candidate->votes_count }}
+                                </td>
+                            </tr>
+                        @endforeach
+                    </tbody>
+                </table>
+            </div>
+
+            
+
+        </div>
+    </div>
+</x-app-layout>

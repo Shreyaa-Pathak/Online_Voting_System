@@ -34,7 +34,4 @@ class VoterController extends Controller
         return back()->with('success', 'Voter rejected.');
     }
 
-
-
-
 }
