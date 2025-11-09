@@ -2,12 +2,15 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Vote;
 use Illuminate\Http\Request;
 use App\Models\Election;
 use App\Models\Candidate;
+use Illuminate\Support\Facades\Crypt;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Storage;
 
-class HomeController extends Controller
+class AdminController extends Controller
 {
     public function index()
     {
@@ -54,8 +57,8 @@ class HomeController extends Controller
         }
     }
 
+    
     //candidate
-
     public function allcandidate()
     {
         $candidates = Candidate::all();
@@ -118,16 +121,52 @@ class HomeController extends Controller
     public function showresult(Request $request)
     {
         $electionId = $request->input('election_id');
+        $election = Election::findOrFail($electionId);
 
-        // $photo = Candidate:->file('photo')->store('candidates', 'public');
+        $votes = Vote::where('election_id', $electionId)->get();
 
-        $candidates = Candidate::withCount('votes')
-            ->where('election_id', $electionId)
+        foreach ($votes as $vote) {
+            try {
+                $data = json_decode(Crypt::decryptString($vote->encrypted_vote), true);
+
+                // Recompute the hash (handle both designs — with or without user_id)
+                $stringToHash = isset($data['user_id'])
+                    ? $data['user_id'] . '|' . $data['election_id'] . '|' . $data['candidate_id'] . '|' . $data['timestamp'] . '|' . $data['nonce']
+                    : $data['election_id'] . '|' . $data['candidate_id'] . '|' . $data['timestamp'] . '|' . $data['nonce'];
+
+                $recomputed = hash('sha256', $stringToHash);
+
+                if ($recomputed !== $vote->commitment) {
+                    $vote->tampered = true;
+                    $vote->save();
+                }
+            } catch (\Exception $e) {
+                $vote->tampered = true;
+                $vote->save();
+            }
+        }
+
+        // Count only valid (untampered) votes
+        $results = Vote::where('election_id', $electionId)
+            ->where('tampered', false)
+            ->select('candidate_id', DB::raw('COUNT(*) as total'))
+            ->groupBy('candidate_id')
             ->get();
 
-        $election = Election::find($electionId);
+        // Merge results with candidate info
+        $candidates = Candidate::where('election_id', $electionId)->get()->map(function ($candidate) use ($results) {
+            $result = $results->firstWhere('candidate_id', $candidate->id);
+            $candidate->votes_count = $result ? $result->total : 0;
+            return $candidate;
+        });
 
+        // Determine winner
         $winner = $candidates->sortByDesc('votes_count')->first();
-        return view('admin.showresult', compact('candidates', 'election', 'winner'));
+
+        $tamperedCount = Vote::where('election_id', $electionId)
+            ->where('tampered', true)
+            ->count();
+
+        return view('admin.showresult', compact('candidates', 'election', 'winner', 'tamperedCount'));
     }
 }

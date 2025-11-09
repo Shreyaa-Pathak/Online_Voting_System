@@ -22,7 +22,7 @@ class DatabaseSeeder extends Seeder
             'password' => Hash::make('admin'),
             'role' => 1,
             'voterid' => 'admin', // default
-            'voteridnumber'=>'1111',
+            'voteridnumber' => '1111',
             'dob' => now(),       // default
             'address' => 'admin_address',
             'phonenumber' => '0000000000',

@@ -8,15 +8,15 @@ use App\Models\Vote;
 
 class Candidate extends Model
 {
-    protected $fillable = ['election_id','candidatename', 'partyname', 'address', 'candidatenumber','photo'];
+    protected $fillable = ['election_id', 'candidatename', 'partyname', 'address', 'candidatenumber', 'photo'];
 
     public function election()
-{
-    return $this->belongsTo(Election::class);
-}
-public function votes()
-{
-    return $this->hasMany(Vote::class);
-}
+    {
+        return $this->belongsTo(Election::class);
+    }
+    public function votes()
+    {
+        return $this->hasMany(Vote::class);
+    }
 
 }

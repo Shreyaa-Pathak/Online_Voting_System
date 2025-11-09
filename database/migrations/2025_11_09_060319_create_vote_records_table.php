@@ -10,13 +10,11 @@ return new class extends Migration {
      */
     public function up(): void
     {
-        Schema::create('votes', function (Blueprint $table) {
+        Schema::create('vote_records', function (Blueprint $table) {
             $table->id();
+            $table->foreignId('user_id')->constrained()->onDelete('cascade');
             $table->foreignId('election_id')->constrained()->onDelete('cascade');
-            $table->foreignId('candidate_id')->constrained()->onDelete('cascade');
-            $table->string('commitment')->unique(); // hashed vote
-            $table->text('encrypted_vote'); // Laravel encrypted data
-            $table->boolean('tampered')->default(false);
+            $table->boolean('has_voted')->default(false);
             $table->timestamps();
         });
     }
@@ -26,6 +24,6 @@ return new class extends Migration {
      */
     public function down(): void
     {
-        Schema::dropIfExists('votes');
+        Schema::dropIfExists('vote_records');
     }
 };

@@ -10,17 +10,19 @@ use Illuminate\Database\Eloquent\Model;
 
 class Vote extends Model
 {
-    protected $fillable = ['user_id', 'election_id', 'candidate_id'];
+    protected $fillable = [
+        'election_id',
+        'candidate_id',
+        'commitment',
+        'encrypted_vote',
+        'tampered'
+    ];
 
     public function candidate()
     {
-       return $this->belongsTo(Candidate::class);
+        return $this->belongsTo(Candidate::class);
     }
-    public function user()
-     {
-        return $this->belongsTo(User::class);
-    }
-    public function election() 
+    public function election()
     {
         return $this->belongsTo(Election::class);
     }

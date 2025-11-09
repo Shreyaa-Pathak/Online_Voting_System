@@ -3,14 +3,12 @@
 namespace App\Http\Controllers\Auth;
 
 use App\Http\Controllers\Controller;
-use App\Http\Controllers\VoterController;
 use App\Models\User;
 use Illuminate\Auth\Events\Registered;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
-use Illuminate\Validation\Rules;
+use Illuminate\Validation\Rules\Password;
 use Illuminate\View\View;
 
 class RegisteredUserController extends Controller
@@ -32,32 +30,40 @@ class RegisteredUserController extends Controller
     {
         $request->validate([
             'name' => ['required', 'string', 'max:255'],
-            'email' => ['required', 'string', 'lowercase', 'email', 'max:255', 'unique:'.User::class],
-            'password' => ['required', 'confirmed', Rules\Password::defaults()],
-            'voterid' => 'required|image|mimes:jpg,jpeg,png|max:2048',
+            'email' => ['required', 'string', 'lowercase', 'email', 'max:255', 'unique:' . User::class],
+            'dob' => ['required', 'date'],
+            'address' => ['required', 'string', 'max:255'],
+            'phonenumber' => ['required', 'digits_between:10,10'],
+            'voteridnumber' => ['required', 'string', 'max:255'],
+            'voterid' => ['required', 'image', 'mimes:jpg,jpeg,png', 'max:2048'],
+            'password' => [
+                'required',
+                'confirmed',
+                Password::min(8)
+                    ->mixedCase()       // must contain uppercase and lowercase
+                    ->letters()         // must contain letters
+                    ->numbers()         // must contain numbers
+                    ->symbols(),        // must contain at least one symbol
+            ],
         ]);
 
-         $voteridPath = $request->file('voterid')->store('voterids', 'public');
-      
+        $voteridPath = $request->file('voterid')->store('voterids', 'public');
 
         $user = User::create([
             'name' => $request->name,
             'email' => $request->email,
             'password' => Hash::make($request->password),
-           'voterid'=> $voteridPath,
-           'voteridnumber'=> $request->voteridnumber,
-           'role'=> 0,
-           'dob'=> $request->dob,
-           'address'=> $request->address,
-           'phonenumber'=> $request->phonenumber,
-           'status'=> 0,
+            'voterid' => $voteridPath,
+            'voteridnumber' => $request->voteridnumber,
+            'role' => 0,
+            'dob' => $request->dob,
+            'address' => $request->address,
+            'phonenumber' => $request->phonenumber,
+            'status' => 0,
         ]);
 
         event(new Registered($user));
 
-        // Auth::login($user);
-
-        // return redirect(route('dashboard', absolute: false));
         return redirect()->route('login')->with('status', 'Registration successful. Please login.');
     }
 }
