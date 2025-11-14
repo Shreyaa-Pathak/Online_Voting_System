@@ -3,13 +3,16 @@
 namespace App\Http\Controllers\Auth;
 
 use App\Http\Controllers\Controller;
+use App\Models\PreapprovedUser;
 use App\Models\User;
 use Illuminate\Auth\Events\Registered;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Config;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Validation\Rules\Password;
 use Illuminate\View\View;
+use App\Helpers\Sha256;
 
 class RegisteredUserController extends Controller
 {
@@ -46,6 +49,22 @@ class RegisteredUserController extends Controller
                     ->symbols(),        // must contain at least one symbol
             ],
         ]);
+
+
+        // Generate HMAC-hashed key
+        $secret = config('app.preaaproved_key');
+        $key = Sha256::hash($request->voteridnumber . $request->email . $request->phonenumber . $request->dob . $request->name . $secret);
+
+        // Check pre-approved users
+        $preUser = PreapprovedUser::where('key_hash', $key)->first();
+
+        if (!$preUser) {
+            return back()->withErrors([
+                'error' => 'You are not allowed to register. Please check your details.'
+            ])->withInput();
+        }
+
+
 
         $voteridPath = $request->file('voterid')->store('voterids', 'public');
 

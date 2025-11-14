@@ -9,6 +9,7 @@ use App\Models\Candidate;
 use Illuminate\Support\Facades\Crypt;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Storage;
+use App\Helpers\Sha256;
 
 class AdminController extends Controller
 {
@@ -118,7 +119,8 @@ class AdminController extends Controller
         return view('admin.result', compact('elections'));
 
     }
-    public function showresult(Request $request)
+  
+    public function showResult(Request $request)
     {
         $electionId = $request->input('election_id');
         $election = Election::findOrFail($electionId);
@@ -129,20 +131,31 @@ class AdminController extends Controller
             try {
                 $data = json_decode(Crypt::decryptString($vote->encrypted_vote), true);
 
-                // Recompute the hash (handle both designs — with or without user_id)
-                $stringToHash = isset($data['user_id'])
-                    ? $data['user_id'] . '|' . $data['election_id'] . '|' . $data['candidate_id'] . '|' . $data['timestamp'] . '|' . $data['nonce']
-                    : $data['election_id'] . '|' . $data['candidate_id'] . '|' . $data['timestamp'] . '|' . $data['nonce'];
+                // Recompute hash using custom SHA-256
+                $stringToHash = $data['election_id'] . '|' . $data['candidate_id'] . '|' . $data['timestamp'] . '|' . $data['nonce'];
+                $recomputed = Sha256::hash($stringToHash);
 
-                $recomputed = hash('sha256', $stringToHash);
-
+                // Flag tampered votes
                 if ($recomputed !== $vote->commitment) {
                     $vote->tampered = true;
                     $vote->save();
+
+                    // Optionally log for audit
+                    DB::table('tampered_votes_log')->insert([
+                        'vote_id' => $vote->id,
+                        'detected_at' => now(),
+                        'details' => json_encode($data),
+                    ]);
                 }
             } catch (\Exception $e) {
                 $vote->tampered = true;
                 $vote->save();
+
+                DB::table('tampered_votes_log')->insert([
+                    'vote_id' => $vote->id,
+                    'detected_at' => now(),
+                    'details' => 'Decryption failed',
+                ]);
             }
         }
 
@@ -153,7 +166,7 @@ class AdminController extends Controller
             ->groupBy('candidate_id')
             ->get();
 
-        // Merge results with candidate info
+        // Merge with candidate info
         $candidates = Candidate::where('election_id', $electionId)->get()->map(function ($candidate) use ($results) {
             $result = $results->firstWhere('candidate_id', $candidate->id);
             $candidate->votes_count = $result ? $result->total : 0;

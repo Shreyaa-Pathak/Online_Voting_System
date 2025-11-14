@@ -123,4 +123,6 @@ return [
         'store' => env('APP_MAINTENANCE_STORE', 'database'),
     ],
 
+    'preaaproved_key' => env('PREAPPROVED_SALT_KEY'),
+
 ];
